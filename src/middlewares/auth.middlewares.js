@@ -1,0 +1,1 @@
+export async function validateAuth(req, res, next){}
