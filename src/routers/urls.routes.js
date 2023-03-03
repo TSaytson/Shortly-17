@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { urlShorten, getUrlById, openUrl, removeUrl } from '../controllers/urls.controllers.js';
-import { verifyAuth } from '../middlewares/urls.middlewares.js';
+import { verifyAuth } from '../middlewares/auth.middlewares.js';
 import { validateSchema } from '../middlewares/validateSchema.middleware.js';
 import { urlSchema } from '../schemas/urls.schemas.js'
 

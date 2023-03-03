@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { verifyUser } from "../repositories/auth.repositories.js";
 
 export async function validateSignUp(req, res, next) {
@@ -46,6 +47,28 @@ export async function validateSignIn(req, res, next) {
         console.log(error);
         return res.sendStatus(422);
     }
+
+    next();
+}
+
+
+export async function verifyAuth(req, res, next) {
+    const { authorization } = req.headers;
+    const token = authorization?.
+        replace('Bearer ', '');
+
+    if (!token)
+        return res.status(401).
+            send('Não autorizado');
+
+    jwt.verify(token,
+        process.env.JWT_SECRET || 'secret',
+        (error, decoded) => {
+            if (error)
+                return res.status(401).
+                    send('token inválido');
+            res.locals.userId = decoded.id;
+        })
 
     next();
 }
