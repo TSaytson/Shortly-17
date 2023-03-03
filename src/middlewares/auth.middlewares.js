@@ -34,7 +34,7 @@ export async function validateSignIn(req, res, next) {
         const { rows: userFound } =
             await verifyUser(email);
 
-        if (userFound
+        if (userFound[0]
             && bcrypt.compareSync(
                 password, userFound[0].password))
 
