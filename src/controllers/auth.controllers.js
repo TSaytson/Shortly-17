@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken'; 
 import { insertUser, insertSession, verifySession } from '../repositories/auth.repositories.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export async function signUp(req, res) {
     const { user } = res.locals;
