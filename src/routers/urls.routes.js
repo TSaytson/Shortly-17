@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { urlShorten, getUrlById } from '../controllers/urls.controllers.js';
+import { urlShorten, getUrlById, openUrl, removeUrl } from '../controllers/urls.controllers.js';
 import { verifyAuth } from '../middlewares/urls.middlewares.js';
 import { validateSchema } from '../middlewares/validateSchema.middleware.js';
 import { urlSchema } from '../schemas/urls.schemas.js'
@@ -9,8 +9,16 @@ const router = Router();
 router.post('/urls/shorten',
     validateSchema(urlSchema),
     verifyAuth,
-    urlShorten);
+    urlShorten
+);
 router.get('/urls/:id',
-    getUrlById);
-
+    getUrlById
+);
+router.get('/urls/open/:shortUrl',
+    openUrl
+);
+router.delete('/urls/:id',
+    verifyAuth,
+    removeUrl
+);
 export default router;

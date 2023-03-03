@@ -13,3 +13,18 @@ export function selectUrlById(id) {
     SELECT * FROM urls
     WHERE id=$1;`, [id]);
 }
+
+export function selectUrlByshortUrl(shortUrl) {
+    return connectionDB.query(`SELECT * FROM 
+    urls WHERE "shortUrl"=$1;`, [shortUrl]);
+}
+
+export function updateUrlViews(id) {
+    return connectionDB.query(`UPDATE urls
+    SET views = views + 1
+    WHERE id=$1;`, [id]);
+}
+export function deleteUrl(id) {
+    return connectionDB.query(`DELETE FROM 
+    urls WHERE id=$1;`, [id]);
+}

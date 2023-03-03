@@ -13,7 +13,7 @@ export async function verifyAuth(req, res, next) {
             send('Não autorizado');
     
     jwt.verify(token,
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'secret',
         (error, decoded) => {
             if (error)
                 return res.status(401).
