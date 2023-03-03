@@ -18,7 +18,7 @@ export async function verifyAuth(req, res, next) {
             if (error)
                 return res.status(401).
                     send('token inválido');
-            console.log(decoded);
+            res.locals.userId = decoded.id;
         })
     
     next();
