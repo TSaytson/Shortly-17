@@ -1,4 +1,4 @@
-import { selectUrlByUserId, selectUserById, sumViewsUrls } from "../repositories/users.repositories.js";
+import { selectUrlByUserId, selectUserById, selectUsersJoinUrlsRanking, sumViewsUrls } from "../repositories/users.repositories.js";
 
 export async function usersData(req, res) {
     const { userId } = res.locals;
@@ -22,6 +22,17 @@ export async function usersData(req, res) {
             send(error.message);
     }
     
+}
 
-    
+export async function ranking(req, res) {
+    try {
+        const { rows } =
+            await selectUsersJoinUrlsRanking();
+        console.log(rows);
+        return res.status(200).send(rows);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).
+            send(error.message);
+    }
 }
