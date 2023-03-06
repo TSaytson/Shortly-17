@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { verifyUser } from "../repositories/auth.repositories.js";
+import { authRepository } from "../repositories/auth.repository.js";
 
 export async function validateSignUp(req, res, next) {
     
@@ -8,7 +8,7 @@ export async function validateSignUp(req, res, next) {
 
     try {
         const { rowCount: user } =
-            await verifyUser(email);
+            await authRepository.findUser(email);
 
         if (user)
             return res.status(409).
@@ -33,8 +33,8 @@ export async function validateSignIn(req, res, next) {
     const { email, password } = req.body;
     try {
         const { rows: userFound } =
-            await verifyUser(email);
-
+            await authRepository.findUser(email);
+        
         if (userFound[0]
             && bcrypt.compareSync(
                 password, userFound[0].password))

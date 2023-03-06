@@ -1,12 +1,19 @@
 import { nanoid } from "nanoid/non-secure";
-import { updateUrlViews, deleteUrl, insertUrl, selectUrlById, selectUrlByshortUrl } from "../repositories/urls.repositories.js";
+import { urlRepository } from "../repositories/urls.repository.js";
 
 export async function urlShorten(req, res) {
     const shortUrl = nanoid(8);
     const { userId } = res.locals;
     const { url } = req.body;
     try {
-        await insertUrl(
+        const { rowCount: registeredUrl } =
+            await urlRepository.findUrl(url);
+        
+        if (registeredUrl)
+            return res.status(409).
+                send('Url já cadastrada');
+
+        await urlRepository.insertUrl(
             userId, url, shortUrl
         );
 
@@ -25,12 +32,10 @@ export async function getUrlById(req, res) {
     const { id } = req.params;
     try {
         const { rows: url } = await
-            selectUrlById(id);
+            urlRepository.selectFieldsUrlById(id);
         if (!url[0])
             return res.sendStatus(404);
-        delete url[0].views;
-        delete url[0].userId;
-        delete url[0].createdAt;
+
         return res.status(200).
             send(url[0]);
     } catch (error) {
@@ -44,10 +49,10 @@ export async function openUrl(req, res) {
     const { shortUrl } = req.params;
     try {
         const {rows: urlData} =
-            await selectUrlByshortUrl(shortUrl);
+            await urlRepository.selectByshortUrl(shortUrl);
         if (!urlData[0])
             return res.sendStatus(404);
-        await updateUrlViews(urlData[0].id);
+        await urlRepository.updateUrlViews(urlData[0].id);
         return res.redirect(urlData[0].url);
     } catch (error) {
         console.log(error);
@@ -62,15 +67,15 @@ export async function removeUrl(req, res) {
     const { id } = req.params;
     try {
         const { rows: url } =
-            await selectUrlById(id);
-
+            await urlRepository.selectUrlById(id);
+        
         if (!url[0])
             return res.sendStatus(404);
 
         if (url[0].userId !== userId)
             return res.sendStatus(401);
 
-        await deleteUrl(id);
+        await urlRepository.deleteUrl(id);
         return res.sendStatus(204);
     } catch (error) {
         console.log(error);

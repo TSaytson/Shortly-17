@@ -1,21 +1,22 @@
-import { selectUrlByUserId, selectUserById, selectUsersJoinUrlsRanking, sumViewsUrls } from "../repositories/users.repositories.js";
+import { usersRepository } from "../repositories/users.repository.js";
 
 export async function usersData(req, res) {
     const { userId } = res.locals;
     try {
         const { rows: user } =
-            await selectUserById(userId);
+            await usersRepository.selectUserById(userId);
         const { rows: views } =
-            await sumViewsUrls(userId);
+            await usersRepository.sumViewsUrls(userId);
         const { rows: shortenedUrls } =
-            await selectUrlByUserId(userId);
+            await usersRepository.selectUrlByUserId(userId);
         
         return res.status(200).send({
             id: userId,
             name: user[0].name,
             visitCount: views[0].sum,
             shortenedUrls
-        })
+        });
+
     } catch (error) {
         console.log(error);
         return res.status(500).
@@ -27,8 +28,9 @@ export async function usersData(req, res) {
 export async function ranking(req, res) {
     try {
         const { rows } =
-            await selectUsersJoinUrlsRanking();
-        console.log(rows);
+            await usersRepository.
+                selectUsersJoinUrlsRanking();
+        
         return res.status(200).send(rows);
     } catch (error) {
         console.log(error);
